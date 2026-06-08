@@ -1,31 +1,12 @@
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter } from "react-router";
-import { RouterProvider } from "react-router/dom";
+import type { ReactNode } from "react";
 import "./index.css";
-import { Home } from "./pages/home";
-import { Dashboard } from "./pages/dashboard";
-import { Login } from "./pages/login";
-import { ProtectedRoute } from "./routes/protected-route";
+import { ReactRouterApp } from "./examples/react-router-app";
+import { TanStackRouterApp } from "./examples/tanstack-router-app";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    element: <ProtectedRoute />,
-    children: [
-      {
-        path: "/dashboard",
-        element: <Dashboard />,
-      },
-    ],
-  },
-]);
+type RouterMode = "react-router" | "tanstack-router";
+
+const routerMode: RouterMode = "react-router";
 
 const root = document.getElementById("root");
 
@@ -33,4 +14,9 @@ if (!root) {
   throw new Error("Root element not found");
 }
 
-ReactDOM.createRoot(root).render(<RouterProvider router={router} />);
+const routerApps: Record<RouterMode, ReactNode> = {
+  "react-router": <ReactRouterApp />,
+  "tanstack-router": <TanStackRouterApp />,
+};
+
+ReactDOM.createRoot(root).render(routerApps[routerMode]);

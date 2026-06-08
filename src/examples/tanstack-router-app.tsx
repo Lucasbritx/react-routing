@@ -5,6 +5,7 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  useNavigate,
 } from "@tanstack/react-router";
 import { Home } from "../pages/home";
 import { Dashboard } from "../pages/dashboard";
@@ -23,22 +24,46 @@ const rootRoute = createRootRoute({
   ),
 });
 
+function TanStackHome() {
+  return (
+    <Home
+      renderLink={({ to, className, children }) => (
+        <Link className={className} to={to}>
+          {children}
+        </Link>
+      )}
+    />
+  );
+}
+
+function TanStackLogin() {
+  const navigate = useNavigate();
+
+  return <Login onLoginSuccess={() => navigate({ to: "/dashboard", replace: true })} />;
+}
+
+function TanStackDashboard() {
+  const navigate = useNavigate();
+
+  return <Dashboard onLogout={() => navigate({ to: "/login", replace: true })} />;
+}
+
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: Home,
+  component: TanStackHome,
 });
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/login",
-  component: Login,
+  component: TanStackLogin,
 });
 
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/dashboard",
-  component: Dashboard,
+  component: TanStackDashboard,
 });
 
 const routeTree = rootRoute.addChildren([
@@ -50,6 +75,12 @@ const routeTree = rootRoute.addChildren([
 const router = createRouter({
   routeTree,
 });
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 export function TanStackRouterApp() {
   return <RouterProvider router={router} />;
