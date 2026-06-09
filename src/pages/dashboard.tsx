@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router";
+type DashboardProps = {
+  onLogout?: () => void;
+};
 
-export function Dashboard() {
-  const navigate = useNavigate();
-
+export function Dashboard({ onLogout }: DashboardProps) {
   function handleLogout() {
     localStorage.removeItem("mock-auth");
-    navigate("/login", { replace: true });
+    onLogout?.();
   }
 
   return (

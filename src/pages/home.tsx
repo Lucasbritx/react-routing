@@ -1,19 +1,37 @@
-import { Link } from "react-router";
+import type { ReactNode } from "react";
 
-export const Home = () => {
+type HomeLinkProps = {
+  to: string;
+  className: string;
+  children: ReactNode;
+};
+
+type HomeProps = {
+  renderLink?: (props: HomeLinkProps) => ReactNode;
+};
+
+const defaultRenderLink = ({ to, className, children }: HomeLinkProps) => (
+  <a className={className} href={to}>
+    {children}
+  </a>
+);
+
+export const Home = ({ renderLink = defaultRenderLink }: HomeProps) => {
   return (
     <>
       <h1>Home</h1>
-      <p>
-        Visit the public login page, then enter the protected dashboard.
-      </p>
+      <p>Visit the public login page, then enter the protected dashboard.</p>
       <div className="action-row">
-        <Link className="button-link" to="/login">
-          Login
-        </Link>
-        <Link className="button-link secondary" to="/dashboard">
-          Dashboard
-        </Link>
+        {renderLink({
+          className: "button-link",
+          to: "/login",
+          children: "Login",
+        })}
+        {renderLink({
+          className: "button-link secondary",
+          to: "/dashboard",
+          children: "Dashboard",
+        })}
       </div>
     </>
   );
