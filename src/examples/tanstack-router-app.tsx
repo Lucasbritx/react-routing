@@ -5,11 +5,14 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  redirect,
   useNavigate,
 } from "@tanstack/react-router";
 import { Home } from "../pages/home";
 import { Dashboard } from "../pages/dashboard";
 import { Login } from "../pages/login";
+
+const isAuthenticated = () => localStorage.getItem("mock-auth") === "true";
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -63,6 +66,14 @@ const loginRoute = createRoute({
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/dashboard",
+  beforeLoad: () => {
+    if (!isAuthenticated()) {
+      throw redirect({
+        to: "/login",
+        replace: true,
+      });
+    }
+  },
   component: TanStackDashboard,
 });
 
